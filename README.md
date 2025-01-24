@@ -3,6 +3,7 @@
 - -g nomfichier.dot  -->  Cette option permet de produire un fichier au format GraphViz du graphe analysé
 - -e  -->  Cette option permet d’exclure tous les documents qui ont une extension de type image, css ou javascript.
 - -t heure  -->  Cette option permet de ne prendre en compte que les hits qui sont dans le créneau horaire correspondant à l’intervalle [heure, heure+1[.
+- ub debutUrl  -->  Cette option permet de changer l'url du site dans lequel les passages sont fait. Par défaut à http://intranet-if.insa-lyon.fr
 
 ### Génération de statistique:
 - affichage top 10 des documents les plus consultés dans la console
