@@ -11,8 +11,16 @@ using namespace std;
 class Lecture {
 
 public:
-    bool Readfile(const string &fileName, vector <string> &line );
+    bool Readfile(vector <string> &line );
+    Lecture(const string &fileName);
+    virtual ~Lecture();
+
+private:
+    std::fstream file; 
 
 };
+
+
+
 
 #endif //LECTURE_H

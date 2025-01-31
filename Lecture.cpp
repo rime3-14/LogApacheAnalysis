@@ -6,18 +6,15 @@
 
 using namespace std;
 
-bool Lecture::Readfile(const string &fileName, vector<string> &mots) {
-    std::ifstream file(fileName);  // Ouvrir le fichier
-    if (!file) {
-        cerr << "Erreur d'ouverture du fichier !" << endl;
-        return false;
-    }
+bool Lecture::Readfile(vector<string> &mots) {
 
+    mots.clear();
     int i = 0;
     char c;
     string ligne;
-    getline(file, ligne);
+    if (getline(file, ligne)) {
     while (i < 11) {
+        
         string mot;
         for (size_t j = 0; j < ligne.size(); ++j) {
             c = ligne[j];
@@ -73,7 +70,25 @@ bool Lecture::Readfile(const string &fileName, vector<string> &mots) {
         }
         
     }
-
-    file.close();  // Fermer le fichier
-    return true;  // Retourner vrai si tout s'est bien passé
+    return true;
+    }
+    return false;
 }
+
+    Lecture::Lecture (const string &fileName) :file(fileName)
+    {
+        #ifdef MAP
+            cout << "Appel au constructeur de <Lecture>" << endl;
+        #endif
+            if (!file) {
+                cerr << "Erreur d'ouverture du fichier !" << endl;
+            }
+    }
+
+    Lecture::~Lecture() 
+    {
+        #ifdef MAP
+            cout << "Appel au destructeur de <Lecture>" << endl;
+        #endif
+            file.close();
+    }
