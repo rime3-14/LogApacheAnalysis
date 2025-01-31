@@ -16,3 +16,6 @@
 - dire ce qu'on test (description) --> prendre des parties du fichier log pas l'entièreté
 - le résultat atendu (std.out, stderr.out, *.outfile, Returncode)
 - dire si le résultat obtenu est le même que celui attendu (dans la console)
+
+à tester:
+- deep copy?

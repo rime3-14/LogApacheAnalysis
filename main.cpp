@@ -1,5 +1,9 @@
+// includes systèmes
 #include <iostream>
 using namespace std;
+
+// includes personnel
+#include "Graphe.h"
 
 // lire le log
 #include <vector>
@@ -90,10 +94,26 @@ int main(int argc, char *argv[]) {
             }
         } 
 
+        if (g) {
+            graphe graph;
+
+            // referer et cible de la requête
+            string referer = line[5];
+            string cible = line[9];
+
+            // élément du graph
+            graph[cible].first[referer]++;  // incrémente le nombre de requête avec le même referer et cible
+                                            // acceder avec [start] créé la pair si elle n'existe pas et initilise l'int à 0
+            graph[cible].second++;  //incrémente le nombre de requête avec le même referer
+        }   
+
         // affiche la ligne
         if (out_line) {
             cout << line[0] << " " << line[1] << " " << line[2] << " " << line[3] << " \"" << line[4] << " " << line[5] << " " << line[6] << "\" " << line[7] << "" << line[8] << " \"" << line[9] << "\" \"" << line[10] << "\"" << endl;
+            return 0;
         }
+
     }
+
     return 0;
 }
