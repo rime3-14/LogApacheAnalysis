@@ -1,12 +1,12 @@
 /*************************************************************************
-                           Lecture  -  Gestion de la lecture d'un fichier
+                           Lecture  -  Gestion de la lecture d'un file
                              -------------------
     Début                : 31/01/2025
     Copyright            : (C) 2025 by Rida Bindech
     E-mail               : rida.bindech@insa-lyon.fr
 *************************************************************************/
 
-//---------- Réalisation de la classe <Lecture> (fichier Lecture.cpp) ------------
+//---------- Réalisation de la classe <Lecture> (file Lecture.cpp) ------------
 
 //---------------------------------------------------------------- INCLUDE
 
@@ -14,6 +14,7 @@
 using namespace std;
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <vector>
 
 //------------------------------------------------------ Include personnel
@@ -25,76 +26,51 @@ using namespace std;
 
 //----------------------------------------------------- Méthodes publiques
 bool Lecture::Readfile(vector<string> &mots)
-// Algorithme : Lit une ligne du fichier, extrait les mots et les ajoute à un vecteur.
+// Algorithme : Lit une ligne du file, extrait les mots et les ajoute à un vecteur.
 //
 {
-    mots.clear();  // Vider le vecteur avant de l'utiliser
-    int i = 0;     // Compteur d'indices pour gérer les cas spéciaux
-    char c;        // Variable pour stocker chaque caractère de la ligne
-    string ligne;
+    // Lire une ligne du file
+    string temp;
+    int i;
 
-    // Lire une ligne du fichier
-    if (getline(file, ligne)) {
-        // Parcours de la ligne caractère par caractère
-        while (i < 11) {
-            string mot;
-            for (size_t j = 0; j < ligne.size(); ++j) {
-                c = ligne[j];
-
-                // Cas spécial pour l'indice 3 : ajouter tout ce qui se trouve entre "[" et "]"
-                if (i == 3) {
-                    if (c == '[') {
-                        mot += c;
-                        ++j;  // Passer au caractère suivant après "["
-                        while (j < ligne.size() && ligne[j] != ']') {
-                            mot += ligne[j];  // Ajouter tous les caractères jusqu'à ']'
-                            ++j;
-                        }
-                        if (j < ligne.size() && ligne[j] == ']') {
-                            mot += ligne[j];  // Ajouter le caractère ']' à la fin
-                        }
-                    } else {
-                        mot += c;
-                    }
-                }
-
-                // Cas spécial pour l'indice 10 : ajouter tout ce qui se trouve entre '"' et '"'
-                else if (i == 10) {
-                    if (c == '"') {
-                        mot += c;
-                        ++j;  // Passer au caractère suivant après '"'
-                        while (j < ligne.size() && ligne[j] != '"') {
-                            mot += ligne[j];  // Ajouter tous les caractères jusqu'à '"'
-                            ++j;
-                        }
-                        if (j < ligne.size() && ligne[j] == '"') {
-                            mot += ligne[j];  // Ajouter le caractère '"' à la fin
-                        }
-                    } else {
-                        mot += c;
-                    }
-                }
-
-                // Ajouter le caractère au mot normal
-                else if (!isspace(c)) {
-                    mot += c;  // Ajouter le caractère au mot
-                }
-
-                // Quand un espace est rencontré, ajouter le mot au vecteur
-                if (isspace(c) || j == ligne.size() - 1) {
-                    if (!mot.empty()) {
-                        mot.erase(remove(mot.begin(), mot.end(), '"'), mot.end());  // Supprimer les guillemets
-                        mots.push_back(mot);  // Ajouter le mot au vecteur
-                        mot.clear();  // Réinitialiser le mot
-                        i++; 
-                    }
-                }
-            }
-        }
-        return true;
+    if (file.eof()) {
+        return false;
     }
 
-    return false;  // Retourner faux si la ligne n'a pas pu être lue
+    for (i = 0; i < 3; i++) { // 0: IP, 1: anonyme, 2: anonyme
+        getline(file, temp, ' ');
+        mots.push_back(temp);
+    }
+
+    getline(file, temp, ']'); // 3: date et heure
+    mots.push_back(temp.substr(1));
+
+    getline(file, temp, '"'); 
+
+    for (i = 0; i < 2; i++) { // 4: type d'action, 5: URL
+        getline(file, temp, ' ');
+        mots.push_back(temp);
+    }
+
+    getline(file, temp, '"'); // 6: protocole
+    mots.push_back(temp);
+
+    getline(file, temp, ' ');
+    for (i = 0; i < 2; i++) { // 7: return code, 8: taille réponse
+        getline(file, temp, ' ');
+        mots.push_back(temp);
+    }
+
+    for (i = 0; i < 2; i++) {
+        getline(file, temp, '"');
+
+        getline(file, temp, '"'); // 9: referer, 10: id navigateur
+        mots.push_back(temp);
+    }
+
+    getline(file, temp);
+
+    return true;
 } //----- Fin de Readfile
 
 
@@ -104,18 +80,18 @@ Lecture & Lecture::operator = (const Lecture &unLecture)
 //
 {
     if (this != &unLecture) {  // Vérifier l'auto-affectation
-        // Fermer le fichier actuel s'il est ouvert
+        // Fermer le file actuel s'il est ouvert
         if (file.is_open()) {
             file.close();
         }
 
-        // Copier le nom du fichier
+        // Copier le nom du file
         fileName = unLecture.fileName;
 
-        // Réouvrir le fichier avec le nouveau nom
+        // Réouvrir le file avec le nouveau nom
         file.open(fileName);
         if (!file) {
-            cerr << "Erreur d'ouverture du fichier dans l'opérateur =" << endl;
+            cerr << "Erreur d'ouverture du file dans l'opérateur =" << endl;
         }
     }
     return *this;  // Retourner l'objet courant
@@ -123,21 +99,23 @@ Lecture & Lecture::operator = (const Lecture &unLecture)
 
 
 //-------------------------------------------- Constructeurs - destructeur
-Lecture::Lecture(const string &fileName) :fileName(fileName), file(fileName)
-// Algorithme : Initialisation d'un objet Lecture avec un nom de fichier et ouverture du fichier.
+Lecture::Lecture(const string &fileName) :fileName(fileName)
+// Algorithme : Initialisation d'un objet Lecture avec un nom de file et ouverture du file.
 //
 {
 #ifdef MAP
     cout << "Appel au constructeur de <Lecture>" << endl;
 #endif
 
+    file.open(fileName);
+
     if (!file) {
-        cerr << "Erreur d'ouverture du fichier !" << endl;
+        cerr << "Erreur d'ouverture du file !" << endl;
     }
 } //----- Fin de Lecture
 
 
-Lecture::Lecture(const Lecture &unLecture) :fileName(unLecture.fileName), file(unLecture.fileName)
+Lecture::Lecture(const Lecture &unLecture) :fileName(unLecture.fileName)
 // Algorithme : Constructeur de copie, initialise un objet Lecture avec un autre objet de même type.
 //
 {
@@ -145,14 +123,15 @@ Lecture::Lecture(const Lecture &unLecture) :fileName(unLecture.fileName), file(u
     cout << "Appel au constructeur de copie de <Lecture>" << endl;
 #endif
 
+    file.open(fileName);
     if (!file) {
-        cerr << "Erreur d'ouverture du fichier !" << endl;
+        cerr << "Erreur d'ouverture du file !" << endl;
     }  
 } //----- Fin de Lecture (constructeur de copie)
 
 
 Lecture::~Lecture()
-// Algorithme : Ferme le fichier lors de la destruction de l'objet.
+// Algorithme : Ferme le file lors de la destruction de l'objet.
 //
 {
 #ifdef MAP
@@ -160,7 +139,7 @@ Lecture::~Lecture()
 #endif
 
     if (file.is_open()) {
-        file.close();  // Fermer le fichier si ouvert
+        file.close();  // Fermer le file si ouvert
     }
 } //----- Fin de ~Lecture
 

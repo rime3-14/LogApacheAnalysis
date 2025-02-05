@@ -12,12 +12,7 @@
 
 //--------------------------------------------------- Interfaces utilisées
 #include <string>
-#include <iostream>
-#include <fstream>
 #include <vector>
-#include <regex>
-
-using namespace std;
 
 //------------------------------------------------------------------------
 // Rôle de la classe <Lecture>
