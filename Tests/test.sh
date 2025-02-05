@@ -1,6 +1,6 @@
 echo "-----------------------------------------------------------"
 
-execDir=`pwd`
+execDir='pwd'
 
 if [ "$1" = "" ]
 then
@@ -33,7 +33,7 @@ nStrResult="$1 "
 
 if [ -r "run" ]
 then
-  sRun=`cat run`
+  sRun='cat run'
 else
   echo "No run file found. Exiting."
   exit 2
@@ -122,7 +122,7 @@ then
   number=1
   for i in *.outfile
   do
-    fileName=`basename $i .outfile`
+    fileName='basename $i .outfile'
     if [ -r $fileName ]
     then
       diff -wB $i $fileName

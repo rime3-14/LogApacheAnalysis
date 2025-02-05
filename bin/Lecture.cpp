@@ -107,7 +107,7 @@ Lecture::Lecture(const string &fileName) :fileName(fileName)
 // Algorithme : Initialisation d'un objet Lecture avec un nom de file et ouverture du file.
 //
 {
-#ifdef MAP
+#if MAP
     cout << "Appel au constructeur de <Lecture>" << endl;
 #endif
 
@@ -123,7 +123,7 @@ Lecture::Lecture(const Lecture &unLecture) :fileName(unLecture.fileName)
 // Algorithme : Constructeur de copie, initialise un objet Lecture avec un autre objet de même type.
 //
 {
-#ifdef MAP
+#if MAP
     cout << "Appel au constructeur de copie de <Lecture>" << endl;
 #endif
 
@@ -138,7 +138,7 @@ Lecture::~Lecture()
 // Algorithme : Ferme le file lors de la destruction de l'objet.
 //
 {
-#ifdef MAP
+#if MAP
     cout << "Appel au destructeur de <Lecture>" << endl;
 #endif
 
