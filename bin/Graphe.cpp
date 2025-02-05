@@ -37,8 +37,8 @@ void Graphe::toDot ( const string nom ) const
     unordered_map<string, int>::iterator it_B;
 
      // Parcours du graphe pour ajouter ses arrêtes
-    for (graphe::iterator it1 = (*graph).begin ( ) ; it1 != (*graph).end ( ) ; ++it1 ) {
-        for (unordered_map<string, int>::iterator it2 = it1->second.first.begin ( ) ; it2 != it1->second.first.end ( ) ; ++it2 ) {
+    for (graphe::const_iterator it1 = graph.cbegin ( ) ; it1 != graph.cend ( ) ; ++it1 ) {
+        for (unordered_map<string, int>::const_iterator it2 = it1->second.first.cbegin ( ) ; it2 != it1->second.first.cend ( ) ; ++it2 ) {
             // if A not in correspondances add A and node number, else find node number
 
             it_A = correspondances.find ( (*it1).first );
@@ -61,13 +61,13 @@ void Graphe::toDot ( const string nom ) const
             }
 
             // add A -> B
-            fichier << "node" << indexA << " -> node" << indexB << " [label=\"" << (*it2).second << "\"];" << endl;
+            fichier << "node" << indexB << " -> node" << indexA << " [label=\"" << (*it2).second << "\"];" << endl;
         }
     }
 
     fichier << "}" << endl;
 
-    std::cout << "Dot-file " << nom << " generated" << endl;
+    cout << "Dot-file " << nom << " generated" << endl;
 
     // Fermeture du fichier redirection.txt
     fichier.close ( );
@@ -97,7 +97,7 @@ Graphe::Graphe ( const Graphe & unGraphe )
 } //----- Fin de Graphe (constructeur de copie)
 
 
-Graphe::Graphe ( graphe * const unGraphe )
+Graphe::Graphe ( const graphe & unGraphe )
 // Algorithme :
 //
 {

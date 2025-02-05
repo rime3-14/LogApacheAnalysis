@@ -17,5 +17,43 @@
 - le résultat atendu (std.out, stderr.out, *.outfile, Returncode)
 - dire si le résultat obtenu est le même que celui attendu (dans la console)
 
-à tester:
-- deep copy?
+todo :
+- deep copy du graphe?
+- vérifier les lignes mal formée dans le readFile
+- vérifier que l'ub commence par "http"
+- afficher une erreur si une option inexistante est donnée
+
+
+à tester (faire des mini-fichier de log) :
+tester la lecture du fichier log :
+- fichier log sans ligne
+- fichier log inexistant
+- tester les lignes mal formées
+
+tester -t
+- avec des lignes à extraire
+- avec des lignes à extraire + ligne avec l'heure d'après/avant
+- avec toutes les lignes à extraire
+- avec aucune lignes à extraire
+- avec une heure invalide en option
+
+tester -e
+- avec des lignes à supprimer
+- avec aucune lignes à supprimer
+- avec toutes les lignes à supprimer
+
+tester -g
+- fichier .dot correct produit
+
+tester -ub
+- donner un url de début différent de celui par défaut
+- donner une url de début mal formée
+
+tester le top 10
+- fichier log avec - de 10 lignes
+- ficher log avec + de 10 lignes
+- fichier log avec le même nombre de consultations
+
+tester la robustesse
+- donner une option inexistante
+- donner toutes les options

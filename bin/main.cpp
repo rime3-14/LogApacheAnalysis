@@ -4,6 +4,7 @@ using namespace std;
 
 // includes personnel
 #include "Graphe.h"
+#include "Lecture.h"
 
 // lire le log
 #include <vector>
@@ -14,21 +15,15 @@ using namespace std;
 #include <utility>
 
 // top 10
-#include <set>
+#include <map>
 
 // autre
 #include <cstring>
 
-// Fonction temporaire pour tester sans avoir la classe de lecture de log faite
-bool readFile(const string &fileName, vector<string> &line) {
-    line = {"192.168.0.0", "-", "-", "[08/Sep/2012:11:16:02 +0200]", "GET", "/temps/4IF16.html", "HTTP/1.1", "200", "12106", "http://intranet-if.insa-lyon.fr/temps/4IF15.html", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:14.0) Gecko/20100101 Firefox/14.0.1"};
-    return true;
-}
-
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
-        cout << "Utilisation: ./analog [options] nomfichier.log" << endl;
+        cerr << "Utilisation: ./analog [options] nomfichier.log" << endl;
         return 1;
     }
 
@@ -42,6 +37,9 @@ int main(int argc, char *argv[]) {
     string graph_file_name;
     string debut_url = "http://intranet-if.insa-lyon.fr";
     string heure;
+
+    // graph pour créer le graphe et le top 10
+    graphe data_log;
 
     // vérifie les options
     for (int i = 1; i < argc - 1; i++) {
@@ -62,8 +60,10 @@ int main(int argc, char *argv[]) {
     }
     
     // lit les lignes du fichier log une par une tant qu'il n'y a pas d'erreur ou de eof
+    Lecture lecture(log_name);
+
     vector<string> line;
-    while (readFile(log_name, line)) {
+    while (lecture.Readfile(line)) {
         bool out_line = true;  // variable pour afficher ou nom la ligne
 
         // enlève le début de l'url correspondant au site que l'on parcours sur les urls qui l'ont
@@ -94,26 +94,49 @@ int main(int argc, char *argv[]) {
             }
         } 
 
-        if (g) {
-            graphe graph;
-
+        if (out_line) {
+            // récupère les données pour créer le graph et donner le top 10
             // referer et cible de la requête
-            string referer = line[5];
-            string cible = line[9];
+            string cible = line[5];
+            string referer = line[9];
 
             // élément du graph
-            graph[cible].first[referer]++;  // incrémente le nombre de requête avec le même referer et cible
+            data_log[cible].first[referer]++;  // incrémente le nombre de requête avec le même referer et cible
                                             // acceder avec [start] créé la pair si elle n'existe pas et initilise l'int à 0
-            graph[cible].second++;  //incrémente le nombre de requête avec le même referer
-        }   
+            data_log[cible].second++;  //incrémente le nombre de requête avec le même referer
 
-        // affiche la ligne
-        if (out_line) {
+
+            // affiche la ligne
             cout << line[0] << " " << line[1] << " " << line[2] << " " << line[3] << " \"" << line[4] << " " << line[5] << " " << line[6] << "\" " << line[7] << "" << line[8] << " \"" << line[9] << "\" \"" << line[10] << "\"" << endl;
-            return 0;
-        }
 
+            line.clear();
+        }
     }
+
+    if (g) {
+        Graphe graph(data_log);
+        graph.toDot(graph_file_name);
+    }
+
+    // Affichage du top 10
+    multimap<int, string> top10;  // Trie automatiquement par ordre croissant des clés par nombre de requêtes
+
+    for (auto it = data_log.begin(); it != data_log.end(); ++it) {
+        int nb_requetes = it->second.second; // Nombre total de requêtes vers la cible
+
+        top10.insert({nb_requetes, it->first});
+
+        // Si plus de 10 éléments, supprime le plus petit
+        if (top10.size() > 10) {
+            top10.erase(top10.begin());
+        }
+    }
+
+    // Affichage du top 10 en ordre décroissant
+    for (auto it = top10.rbegin(); it != top10.rend(); ++it) {
+        cout << it->second << " (" << it->first << " hits)" << endl;
+    }
+
 
     return 0;
 }

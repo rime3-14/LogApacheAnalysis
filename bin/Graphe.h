@@ -58,7 +58,7 @@ public:
     // Contrat :
     //
 
-    Graphe ( graphe * const unGraphe );
+    Graphe ( const graphe & unGraphe );
     // Mode d'emploi :
     //
     // Contrat :
@@ -74,7 +74,7 @@ public:
 
 protected:
 //----------------------------------------------------- Attributs protégés
-    graphe * graph;
+    graphe graph;
     vector<string> correspondances;
 
 };
