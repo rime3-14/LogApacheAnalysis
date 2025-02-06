@@ -20,8 +20,6 @@
 todo :
 - deep copy du graphe?
 - vérifier les lignes mal formée dans le readFile
-- vérifier que l'ub commence par "http"
-- afficher une erreur si une option inexistante est donnée
 
 
 à tester (faire des mini-fichier de log) :

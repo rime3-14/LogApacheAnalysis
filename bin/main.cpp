@@ -37,6 +37,7 @@ int main(int argc, char *argv[]) {
     string graph_file_name;
     string debut_url = "http://intranet-if.insa-lyon.fr";
     string heure;
+    bool out_line;
 
     // graph pour créer le graphe et le top 10
     graphe data_log;
@@ -56,6 +57,15 @@ int main(int argc, char *argv[]) {
             
         } else if (strcmp(argv[i], "-ub") == 0) {
             debut_url = argv[++i];
+
+            // vérifier que le début d'url donné est valide
+            if (debut_url.substr(0, 4) != "http") {
+                cerr << "Erreur : Veuillez entrer un début d'url à retirer valide" << endl;
+                return 1;
+            }
+        } else {
+            cerr << "Erreur : Option inconnue donnée ( " << argv[i] << " )" << endl;
+            return 1;
         }
     }
     
@@ -64,7 +74,7 @@ int main(int argc, char *argv[]) {
 
     vector<string> line;
     while (lecture.Readfile(line)) {
-        bool out_line = true;  // variable pour afficher ou nom la ligne
+        out_line = true;  // variable pour afficher ou nom la ligne
 
         // enlève le début de l'url correspondant au site que l'on parcours sur les urls qui l'ont
         size_t debut_url_start = line[9].find(debut_url);
@@ -104,13 +114,8 @@ int main(int argc, char *argv[]) {
             data_log[cible].first[referer]++;  // incrémente le nombre de requête avec le même referer et cible
                                             // acceder avec [start] créé la pair si elle n'existe pas et initilise l'int à 0
             data_log[cible].second++;  //incrémente le nombre de requête avec le même referer
-
-
-            // affiche la ligne
-            cout << line[0] << " " << line[1] << " " << line[2] << " " << line[3] << " \"" << line[4] << " " << line[5] << " " << line[6] << "\" " << line[7] << "" << line[8] << " \"" << line[9] << "\" \"" << line[10] << "\"" << endl;
-
-            line.clear();
         }
+        line.clear();
     }
 
     if (g) {
