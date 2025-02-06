@@ -19,7 +19,7 @@
 
 todo :
 - deep copy du graphe?
-- vérifier les lignes mal formée dans le readFile
+- faire en sorte que lorsque le fichier n'existe pas, l'errorcode du main est 1
 
 
 à tester (faire des mini-fichier de log) :

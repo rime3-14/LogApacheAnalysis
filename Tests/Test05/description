@@ -1,0 +1,1 @@
+Ce test permet de vérifier le fonctionnement de l'option -t avec des lignes à extraire à 11h et des lignes à ignorer aux heures d'avant et d'après (12h et 13h) dans le fichier de log
