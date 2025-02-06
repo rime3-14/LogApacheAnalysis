@@ -27,7 +27,7 @@ class Lecture
 //----------------------------------------------------------------- PUBLIC
 public:
 //----------------------------------------------------- Méthodes publiques
-    bool Readfile(vector<string> &line);
+    int Readfile(vector<string> &line);
     // Mode d'emploi :
     //  - Lire le fichier et stocker son contenu dans un vecteur de chaînes.
     // Contrat :

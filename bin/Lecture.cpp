@@ -14,6 +14,7 @@
 using namespace std;
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -25,56 +26,118 @@ using namespace std;
 //----------------------------------------------------------------- PUBLIC
 
 //----------------------------------------------------- Méthodes publiques
-bool Lecture::Readfile(vector<string> &mots)
+int Lecture::Readfile(vector<string> &mots)
 // Algorithme : Lit une ligne du file, extrait les mots et les ajoute à un vecteur.
 //
 {
-    // Lire une ligne du file
-    string temp;
-    int i;
-
-    if (file.eof()) {
-        return false;
+    // Lire la ligne complète depuis le fichier
+    string ligne;
+    if (!getline(file, ligne)) {
+        return -1;  // Fin de fichier ou erreur de lecture
     }
 
-    for (i = 0; i < 3; i++) { // 0: IP, 1: anonyme, 2: anonyme
-        if (getline(file, temp, ' ')) {
-            mots.push_back(temp);
-
-        } else {
-            return false;
-        }
+    //0: IP, 1: anonyme, 2: anonyme
+    istringstream line(ligne);
+    string ip, userLogname, authenticatedUser;
+    if (!(line >> ip >> userLogname >> authenticatedUser)) {
+        cerr << "Erreur: Log incomplet" << endl;
+        return 0;
     }
+    mots.push_back(ip);
+    mots.push_back(userLogname);
+    mots.push_back(authenticatedUser);
 
-    getline(file, temp, ']'); // 3: date et heure
-    mots.push_back(temp.substr(1));
 
-    getline(file, temp, '"'); 
-
-    for (i = 0; i < 2; i++) { // 4: type d'action, 5: URL
-        getline(file, temp, ' ');
-        mots.push_back(temp);
+    // 3: date et heure
+    size_t posDateDeb = ligne.find('[');
+    size_t posDateFin = ligne.find(']', posDateDeb);
+    if (posDateDeb == string::npos || posDateFin == string::npos) {
+        cerr << "Erreur: Mauvais format de date" << endl;
+        return 0;
     }
+    string datetime = ligne.substr(posDateDeb + 1, posDateFin - posDateDeb - 1);
+    mots.push_back(datetime);
 
-    getline(file, temp, '"'); // 6: protocole
-    mots.push_back(temp);
 
-    getline(file, temp, ' ');
-    for (i = 0; i < 2; i++) { // 7: return code, 8: taille réponse
-        getline(file, temp, ' ');
-        mots.push_back(temp);
+    // 4: type d'action, 5: URL, 6: protocole
+    size_t posReqDeb = ligne.find('"', posDateFin);
+    size_t posReqFin = ligne.find('"', posReqDeb + 1);
+    if (posReqDeb == string::npos || posReqFin == string::npos) {
+        cerr << "Erreur: Requête HTTP incomplète" << endl;
+        return 0;
     }
-
-    for (i = 0; i < 2; i++) {
-        getline(file, temp, '"');
-
-        getline(file, temp, '"'); // 9: referer, 10: id navigateur
-        mots.push_back(temp);
+    string requete = ligne.substr(posReqDeb + 1, posReqFin - posReqDeb - 1);
+    // La requête doit contenir trois éléments : méthode, URL et protocole
+    istringstream lineReq(requete);
+    string methode, url, protocole;
+    if (!(lineReq >> methode >> url >> protocole)) {
+        cerr << "Erreur: Requête HTTP incomplète" << endl;
+        return 0;
     }
+    // Vérifier que l'URL n'est pas absente
+    if(url.empty()) {
+        cerr << "Erreur: URL absente" << endl;
+        return 0;
+    }
+    mots.push_back(methode);
+    mots.push_back(url);
+    mots.push_back(protocole);
 
-    getline(file, temp);
 
-    return true;
+    // 7: return code, 8: taille de réponse
+    istringstream lineRest(ligne.substr(posReqFin + 1));
+    string codeRetourStr, tailleRepStr;
+    if (!(lineRest >> codeRetourStr >> tailleRepStr)) {
+        cerr << "Erreur: Log incomplet" << endl;
+        return 0;
+    }
+    // Vérifier que le return code est numérique
+    try {
+        size_t pos;
+        stoi(codeRetourStr, &pos);
+        if (pos != codeRetourStr.size())
+            throw invalid_argument("Caractère non numérique");
+    } catch (exception&) {
+        cerr << "Erreur: Code de retour invalide" << endl;
+        return 0;
+    }
+    // Vérifier que la taille de réponse est numérique
+    try {
+        size_t pos;
+        stoi(tailleRepStr, &pos);
+        if (pos != tailleRepStr.size())
+            throw invalid_argument("Caractère non numérique");
+    } catch (exception&) {
+        cerr << "Erreur: Taille de réponse invalide" << endl;
+        return 0;
+    }
+    mots.push_back(codeRetourStr);
+    mots.push_back(tailleRepStr);
+
+
+    // 9: referer
+    size_t posRefererDeb = ligne.find('"', posReqFin + 1);
+    size_t posRefererFin = ligne.find('"', posRefererDeb + 1);
+    if (posRefererDeb == string::npos || posRefererFin == string::npos || posRefererDeb > posReqFin + 16) {  // longueur de " 200 1000000 "-""
+        cerr << "Erreur: Referer mal formé" << endl;
+        return 0;
+    }
+    string referer = ligne.substr(posRefererDeb + 1, posRefererFin - posRefererDeb - 1);
+    mots.push_back(referer);
+
+
+    // 10: User-Agent
+    size_t posUADeb = ligne.find('"', posRefererFin + 1);
+    size_t posUAFin = ligne.find('"', posUADeb + 1);
+    if (posUADeb == string::npos || posUAFin == string::npos) {
+        cerr << "Erreur: User-Agent mal formé" << endl;
+        return 0;
+    }
+    string userAgent = ligne.substr(posUADeb + 1, posUAFin - posUADeb - 1);
+    mots.push_back(userAgent);
+
+
+    return 1;
 } //----- Fin de Readfile
 
 

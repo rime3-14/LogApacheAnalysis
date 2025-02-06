@@ -53,6 +53,12 @@ int main(int argc, char *argv[]) {
             
         } else if (strcmp(argv[i], "-t") == 0) {
             heure = argv[++i];
+
+            if (stoi(heure) < 0 || stoi(heure) > 24) {
+                cerr << "Erreur : Veuillez entrer une heure valide" << endl;
+                return 1;
+            }
+
             t = true;
             
         } else if (strcmp(argv[i], "-ub") == 0) {
@@ -72,48 +78,51 @@ int main(int argc, char *argv[]) {
     // lit les lignes du fichier log une par une tant qu'il n'y a pas d'erreur ou de eof
     Lecture lecture(log_name);
 
+    int resLecture;  // Obtenir les erreurs de lecture
     vector<string> line;
-    while (lecture.Readfile(line)) {
-        out_line = true;  // variable pour afficher ou nom la ligne
+    while ((resLecture = lecture.Readfile(line)) >= 0) {
+        if (resLecture == 1) {
+            out_line = true;  // variable ignorer ou nom la ligne
 
-        // enlève le début de l'url correspondant au site que l'on parcours sur les urls qui l'ont
-        size_t debut_url_start = line[9].find(debut_url);
-        if (debut_url_start != string::npos) {
-            line[9].erase(debut_url_start, debut_url.size());
-        }
-
-        // filtre les lignes ayant pour cible un fichier image, css ou javascript
-        if (e) {
-            string url = line[5];
-            string extension4 = url.substr(url.size() - 4);
-            string extension3 = url.substr(url.size() - 3);
-            if (extension4 == ".jpg" || extension4 == ".ico" || extension4 == ".png" || 
-                extension4 == ".gif" || extension4 == ".css" || extension3 == ".js") {  // trouver d'autre si nécessaire
-                
-                out_line = false;
+            // enlève le début de l'url correspondant au site que l'on parcours sur les urls qui l'ont
+            size_t debut_url_start = line[9].find(debut_url);
+            if (debut_url_start != string::npos) {
+                line[9].erase(debut_url_start, debut_url.size());
             }
-        }
 
-        // filtre les lignes ayant une heure différente de celle donnée
-        if (t) {
-            string timestamp = line[3];
-            size_t pos = timestamp.find(':');
-            string logHour = timestamp.substr(pos + 1, 2);
-            if (logHour != heure) {
-                out_line = false;
+            // filtre les lignes ayant pour cible un fichier image, css ou javascript
+            if (e) {
+                string url = line[5];
+                string extension4 = url.substr(url.size() - 4);
+                string extension3 = url.substr(url.size() - 3);
+                if (extension4 == ".jpg" || extension4 == ".ico" || extension4 == ".png" || 
+                    extension4 == ".gif" || extension4 == ".css" || extension3 == ".js") {  // trouver d'autre si nécessaire
+                    
+                    out_line = false;
+                }
             }
-        } 
 
-        if (out_line) {
-            // récupère les données pour créer le graph et donner le top 10
-            // referer et cible de la requête
-            string cible = line[5];
-            string referer = line[9];
+            // filtre les lignes ayant une heure différente de celle donnée
+            if (t) {
+                string timestamp = line[3];
+                size_t pos = timestamp.find(':');
+                string logHour = timestamp.substr(pos + 1, 2);
+                if (logHour != heure) {
+                    out_line = false;
+                }
+            } 
 
-            // élément du graph
-            data_log[cible].first[referer]++;  // incrémente le nombre de requête avec le même referer et cible
-                                            // acceder avec [start] créé la pair si elle n'existe pas et initilise l'int à 0
-            data_log[cible].second++;  //incrémente le nombre de requête avec le même referer
+            if (out_line) {
+                // récupère les données pour créer le graph et donner le top 10
+                // referer et cible de la requête
+                string cible = line[5];
+                string referer = line[9];
+
+                // élément du graph
+                data_log[cible].first[referer]++;  // incrémente le nombre de requête avec le même referer et cible
+                                                // acceder avec [start] créé la pair si elle n'existe pas et initilise l'int à 0
+                data_log[cible].second++;  //incrémente le nombre de requête avec le même referer
+            }
         }
         line.clear();
     }
