@@ -1,12 +1,14 @@
 /*************************************************************************
-                           Lecture  -  Gestion de la lecture d'un file
+                           Lecture  -  Gestion de la lecture d'un fichier
                              -------------------
     Début                : 31/01/2025
     Copyright            : (C) 2025 by Rida Bindech
+                           (C) 2025 by Enzo Dos Anjos
     E-mail               : rida.bindech@insa-lyon.fr
+                           enzo.dosanjos@insa-lyon.fr
 *************************************************************************/
 
-//---------- Réalisation de la classe <Lecture> (file Lecture.cpp) ------------
+//---------- Réalisation de la classe <Lecture> (fichier Lecture.cpp) ------------
 
 //---------------------------------------------------------------- INCLUDE
 
@@ -27,7 +29,7 @@ using namespace std;
 
 //----------------------------------------------------- Méthodes publiques
 int Lecture::Readfile(vector<string> &mots)
-// Algorithme : Lit une ligne du file, extrait les mots et les ajoute à un vecteur.
+// Algorithme : Lit une ligne du fichier, extrait les mots et les ajoute à un vecteur.
 //
 {
     // Lire la ligne complète depuis le fichier
@@ -161,7 +163,7 @@ Lecture & Lecture::operator = (const Lecture &unLecture)
         // Réouvrir le fichier avec le nouveau nom
         file.open(fileName);
         if (!file) {
-            cerr << "Erreur d'ouverture du file dans l'opérateur =" << endl;
+            cerr << "Erreur d'ouverture du fichier dans l'opérateur =" << endl;
         }
     }
     return *this;  // Retourner l'objet courant
@@ -180,7 +182,7 @@ Lecture::Lecture(const string &fileName) :fileName(fileName)
     file.open(fileName);
 
     if (!file) {
-        cerr << "Erreur d'ouverture du fichier !" << endl;
+        throw runtime_error("Erreur d'ouverture du fichier : " + fileName);
     }
 } //----- Fin de Lecture
 
@@ -195,8 +197,8 @@ Lecture::Lecture(const Lecture &unLecture) :fileName(unLecture.fileName)
 
     file.open(fileName);
     if (!file) {
-        cerr << "Erreur d'ouverture du fichier !" << endl;
-    }  
+        throw runtime_error("Erreur d'ouverture du fichier : " + fileName);
+    }
 } //----- Fin de Lecture (constructeur de copie)
 
 
@@ -209,7 +211,7 @@ Lecture::~Lecture()
 #endif
 
     if (file.is_open()) {
-        file.close();  // Fermer le file si ouvert
+        file.close();  // Fermer le fichier si ouvert
     }
 } //----- Fin de ~Lecture
 

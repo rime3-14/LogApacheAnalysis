@@ -18,32 +18,26 @@
 - dire si le résultat obtenu est le même que celui attendu (dans la console)
 
 todo :
-- deep copy du graphe?
-- faire en sorte que lorsque le fichier n'existe pas, l'errorcode du main est 1
-
-TODO de lilas:
-- Tester si datalog est vide : s'il l'est, message approprié ("aucune ligne extraite"), sinon, traitements ! (tests 1, 7 et 11)
-- Modifier main pour que -t 7 soit transformé en -t 07, ou noter que ça marche exclusivement avec 2 digits
-- En profiter pour traiter les lettres qui font fail les stoi ?
-- Demander à Rime/Rida de faire le manuel d'utilisation (+ de vérifier la cohérence avec le guide de style ?)
+- faire le manuel d'utilisation
+- vérifier la cohérence avec le guide de style
 
 à tester (faire des mini-fichier de log) :
 tester la lecture du fichier log :
-- fichier log sans ligne
-- fichier log inexistant
-- tester les lignes mal formées
+- 01 : fichier log sans ligne
+- 02 : fichier log inexistant
+- 03 : tester les lignes mal formées
 
 tester -t
-- avec des lignes à extraire
-- avec des lignes à extraire + ligne avec l'heure d'après/avant
-- avec toutes les lignes à extraire
-- avec aucune lignes à extraire
-- avec une heure invalide en option
+- 04 : avec des lignes à extraire
+- 05 : avec des lignes à extraire + ligne avec l'heure d'après/avant
+- 06 : avec toutes les lignes à extraire + une heure avec un seul digit
+- 07 : avec aucune lignes à extraire
+- 08 : avec une heure invalide en option
 
 tester -e
-- avec des lignes à supprimer
-- avec aucune lignes à supprimer
-- avec toutes les lignes à supprimer
+- 09 : avec des lignes à supprimer
+- 10 : avec aucune lignes à supprimer
+- 11 : avec toutes les lignes à supprimer
 
 tester -g
 - 12 : fichier .dot correct produit 

@@ -52,7 +52,13 @@ int main(int argc, char *argv[]) {
     // Vérification des options
     for (int i = 1; i < argc - 1; i++) {
        if (strcmp(argv[i], "-g") == 0) {
-            graph_file_name = argv[++i];
+            // Vérification du nom du graphe si ce n'est pas le nom du fichier log ou l'option suivante qui a été pris
+            if (++i == argc-1 || strstr(argv[i], "-") == argv[i]) {
+                cerr << "Erreur : Le nom du fichier graphe n'a pas été donné" << endl;
+                return 1;
+            }
+
+            graph_file_name = argv[i];
 
             if (graph_file_name.size() < 4 || graph_file_name.substr(graph_file_name.size() - 4) != ".dot") {
                 cerr << "Erreur : Le nom du fichier graphe est invalide (doit terminer par .dot)" << endl;
@@ -65,7 +71,15 @@ int main(int argc, char *argv[]) {
             e = true;
             
         } else if (strcmp(argv[i], "-t") == 0) {
-            heure = argv[++i];
+            i++;
+            for (char c : string(argv[i])) {
+                if (!isdigit(c)) {
+                    cerr << "Erreur : l'heure n'est pas numérique" << endl;
+                    return 1;
+                }
+            }
+
+            heure = argv[i];
 
             if (stoi(heure) < 0 || stoi(heure) > 24) {
                 cerr << "Erreur : Veuillez entrer une heure valide" << endl;
@@ -90,12 +104,18 @@ int main(int argc, char *argv[]) {
     }
     
     // Construction d'un objet lecture qui lit les lignes du fichier log une par une, tant qu'il n'y a pas d'erreur ou de EOF
-    Lecture lecture(log_name);
+    Lecture* lecture = nullptr;  // Déclare un pointeur vers Lecture
+    try {
+        lecture = new Lecture(log_name);  // Alloue dynamiquement l'objet (nécessaire pour utiliser try sans construire d'objet avant)
+    } catch (const runtime_error &e) {
+        cerr << e.what() << endl;
+        return 1;
+    }
 
     int resLecture;  // Retour de la fonction Readfile, correspondant aux codes erreurs de la lecture d'une ligne
     vector<string> line;
 
-    while ((resLecture = lecture.Readfile(line)) >= 0) {
+    while ((resLecture = lecture->Readfile(line)) >= 0) {
         if (resLecture == 1) {
             out_line = true;  // Variable permettant d'ignorer ou non la ligne, selon les options sélectionnées
 
@@ -124,7 +144,7 @@ int main(int argc, char *argv[]) {
                 string timestamp = line[3];
                 size_t pos = timestamp.find(':');
                 string logHour = timestamp.substr(pos + 1, 2);
-                if (logHour != heure) {
+                if (stoi(logHour) != stoi(heure)) {
                     out_line = false;
                 }
             } 
@@ -146,30 +166,35 @@ int main(int argc, char *argv[]) {
         line.clear();
     }
 
-    if (g) {
-        Graphe graph(data_log); // Création d'un objet de la classe Graphe à partir du graphe data_log
-        graph.toDot(graph_file_name); // Création et remplissage du fichier .dot 
-    }
 
-    // Affichage du Top10
-    multimap<int, string> top10;  // Tri automatique par ordre croissant des clés par nombre de hits
-
-    for (auto it = data_log.begin(); it != data_log.end(); ++it) {
-        int nb_requetes = it->second.second; // Nombre total de requêtes vers la cible
-
-        top10.insert({nb_requetes, it->first});
-
-        // Si plus de 10 éléments, supprime le plus petit
-        if (top10.size() > 10) {
-            top10.erase(top10.begin());
+    if (!data_log.empty()) {
+        if (g) {
+            Graphe graph(data_log); // Création d'un objet de la classe Graphe à partir du graphe data_log
+            graph.toDot(graph_file_name); // Création et remplissage du fichier .dot 
         }
+
+        // Affichage du Top10
+        multimap<int, string> top10;  // Tri automatique par ordre croissant des clés par nombre de hits
+
+        for (auto it = data_log.begin(); it != data_log.end(); ++it) {
+            int nb_requetes = it->second.second; // Nombre total de requêtes vers la cible
+
+            top10.insert({nb_requetes, it->first});
+
+            // Si plus de 10 éléments, supprime le plus petit
+            if (top10.size() > 10) {
+                top10.erase(top10.begin());
+            }
+        }
+
+        // Affichage du Top10 par ordre décroissant
+        for (auto it = top10.rbegin(); it != top10.rend(); ++it) {
+            cout << it->second << " (" << it->first << " hits)" << endl;
+        }
+    } else {
+        cout << "Aucune ligne n'a été extraite du fichier de log" << endl;
     }
 
-    // Affichage du Top10 par ordre décroissant
-    for (auto it = top10.rbegin(); it != top10.rend(); ++it) {
-        cout << it->second << " (" << it->first << " hits)" << endl;
-    }
-
-
+    delete lecture;  // Libère la mémoire allouée dynamiquement
     return 0;
 }
