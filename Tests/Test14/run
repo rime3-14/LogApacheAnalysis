@@ -1,1 +1,1 @@
-../../bin/analog -g ../../logTests/ex_log14.log
+../../bin/analog -g graphe ../../logTests/ex_log14.log

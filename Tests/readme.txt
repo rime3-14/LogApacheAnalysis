@@ -39,29 +39,31 @@ Ce fichier cherche à valider tous les tests contenus dans les répertoires dont
 - **06** : avec toutes les lignes à extraire + une heure avec un seul chiffre.
 - **07** : avec aucune ligne à extraire.
 - **08** : avec une heure invalide en option.
+- **09** : avec une heure non numérique en option.
 
 ### Tester `-e` :
-- **09** : avec des lignes à supprimer.
-- **10** : avec aucune ligne à supprimer.
-- **11** : avec toutes les lignes à supprimer.
+- **10** : avec des lignes à ignorer.
+- **11** : avec aucune ligne à ignorer.
+- **12** : avec toutes les lignes à ignorer.
 
 ### Tester `-g` :
-- **12** : fichier `.dot` correct produit.
-- **13** : option `-g` avec un nom de graphe ne terminant pas par `.dot`.
-- **14** : option `-g` sans nom de graphe.
+- **13** : fichier `.dot` correct produit.
+- **14** : option `-g` avec un nom de graphe ne terminant pas par `.dot`.
+- **15** : option `-g` sans nom de graphe + autre option après.
+- **16** : option `-g` sans nom de graphe.
 
 ### Tester `-ub` :
-- **15** : donner une URL de début différente de celle par défaut.
-- **16** : donner une URL de début mal formée.
+- **17** : donner une URL de début différente de celle par défaut.
+- **18** : donner une URL de début mal formée.
 
 ### Tester le top 10 :
-- **17** : fichier log avec moins de 10 cibles différentes.
-- **18** : fichier log avec plus de 10 cibles différentes.
-- **19** : fichier log avec le même nombre de consultations pour plusieurs cibles.
+- **19** : fichier log avec moins de 10 cibles différentes.
+- **20** : fichier log avec plus de 10 cibles différentes.
+- **21** : fichier log avec le même nombre de consultations pour plusieurs cibles.
 
 ### Tester la robustesse :
-- **20** : donner une option inexistante.
-- **21** : donner toutes les options.
+- **22** : donner une option inexistante.
+- **23** : donner toutes les options.
 
 -------------------------------------------------------------------------------
 

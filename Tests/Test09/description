@@ -1,1 +1,1 @@
-Ce test permet de vérifier le fonctionnement de l'option -e avec des lignes à ignorer
+Ce test permet de vérifier l'erreur sortie lorsqu'une heure non numérique est donnée après l'option

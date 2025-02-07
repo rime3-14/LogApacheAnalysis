@@ -1,1 +1,1 @@
-Ce test permet de vérifier qu'un message d'erreur est renvoyé si l'on tente d'utiliser une option inexistante
+Ce test permet de vérifier qu'un Top10 correct est produit quand le log contient plus de 10 cibles différentes

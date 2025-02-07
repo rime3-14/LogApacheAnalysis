@@ -1,1 +1,1 @@
-Ce test permet de vérifier qu'un message d'erreur est retourné quand le nom du fichier graphe est invalide (ne termine pas par .dot)
+Ce test permet de vérifier qu'un fichier .dot correct est produit avec l'option -g

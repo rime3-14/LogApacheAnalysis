@@ -1,1 +1,1 @@
-../../bin/analog -e ../../logTests/ex_log9.log
+../../bin/analog -t sept ../../logTests/ex_log9.log

@@ -1,1 +1,1 @@
-../../bin/analog -ub insa-lyon.fr ../../logTests/ex_log16.log
+../../bin/analog -g ../../logTests/ex_log16.log

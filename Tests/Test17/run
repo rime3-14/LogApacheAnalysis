@@ -1,1 +1,1 @@
-../../bin/analog ../../logTests/ex_log17.log
+../../bin/analog -g graphe.dot -ub https://servif.insa-lyon.fr ../../logTests/ex_log17.log

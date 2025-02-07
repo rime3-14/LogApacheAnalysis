@@ -1,1 +1,1 @@
-Ce test permet de vérifier qu'un message d'erreur est renvoyé si l'on tente d'utiliser l'option -ub avec une URL mal formée (ne commençant pas par http)
+Ce test permet de vérifier qu'un message d'erreur est retourné quand le nom du fichier graphe n'est pas donné
