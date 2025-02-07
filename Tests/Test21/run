@@ -1,0 +1,1 @@
+../../bin/analog -t 07 -e -g graphe.dot -ub http://if.insa-lyon.fr ../../logTests/ex_log21.log

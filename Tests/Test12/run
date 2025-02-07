@@ -1,0 +1,1 @@
+../../bin/analog -g graphe.dot ../../logTests/ex_log12.log

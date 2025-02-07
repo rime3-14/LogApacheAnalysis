@@ -65,7 +65,7 @@ void Graphe::toDot ( const string nom ) const
         }
     }
 
-    fichier << "}" << endl;
+    fichier << "}";
 
     cout << "Dot-file " << nom << " generated" << endl;
 
@@ -90,7 +90,7 @@ Graphe::Graphe ( const Graphe & unGraphe )
 // Algorithme :
 //
 {
-#ifdef MAP
+#if MAP
     cout << "Appel au constructeur de copie de <Graphe>" << endl;
 #endif
     graph = unGraphe.graph; // Copie ou même objet ?
@@ -101,7 +101,7 @@ Graphe::Graphe ( const graphe & unGraphe )
 // Algorithme :
 //
 {
-#ifdef MAP
+#if MAP
     cout << "Appel au constructeur de <Graphe>" << endl;
 #endif
     graph = unGraphe;
@@ -112,7 +112,7 @@ Graphe::~Graphe ( )
 // Algorithme :
 //
 {
-#ifdef MAP
+#if MAP
     cout << "Appel au destructeur de <Graphe>" << endl;
 #endif
 } //----- Fin de ~Graphe

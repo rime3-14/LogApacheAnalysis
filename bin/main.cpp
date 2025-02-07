@@ -1,51 +1,64 @@
-// includes systèmes
-#include <iostream>
+/*************************************************************************
+    début                : 24/01/2025
+    e-mail               : enzo.dos-anjos@insa-lyon.fr
+*************************************************************************/
+
+//-------------------------- Fichier main.cpp ----------------------------
+
+//---------------------------------------------------------------- INCLUDE
+
+//-------------------------------------------------------- Include système
 using namespace std;
+#include <iostream>
+#include <cstring>
 
-// includes personnel
-#include "Graphe.h"
-#include "Lecture.h"
-
-// lire le log
+// Lecture des logs
 #include <vector>
 #include <string>
 
-// stocker le compte des allers d'un referer à une cible
+// Conteneur pour le nombre de trajets referer -> cible
 #include <unordered_map>
 #include <utility>
 
-// top 10
+// Conteneur pour le Top10
 #include <map>
 
-// autre
-#include <cstring>
+//------------------------------------------------------ Include personnel
+#include "Graphe.h"
+#include "Lecture.h"
 
-
+//---------------------------------------------------- Programme principal
 int main(int argc, char *argv[]) {
     if (argc < 2) {
         cerr << "Utilisation: ./analog [options] nomfichier.log" << endl;
         return 1;
     }
 
-    // flags
+    // Flags
     bool g = false;
     bool e = false;
     bool t = false;
 
-    // variables
+    // Variables
     string log_name = argv[argc-1];
     string graph_file_name;
     string debut_url = "http://intranet-if.insa-lyon.fr";
     string heure;
     bool out_line;
 
-    // graph pour créer le graphe et le top 10
+    // Objet de type utilisateur graphe, pour créer le graphe et le top 10
     graphe data_log;
 
-    // vérifie les options
+    // Vérification des options
     for (int i = 1; i < argc - 1; i++) {
        if (strcmp(argv[i], "-g") == 0) {
             graph_file_name = argv[++i];
+
+            if (graph_file_name.size() < 4 || graph_file_name.substr(graph_file_name.size() - 4) != ".dot") {
+                cerr << "Erreur : Le nom du fichier graphe est invalide (doit terminer par .dot)" << endl;
+                return 1;
+            }
+
             g = true;
 
         } else if (strcmp(argv[i], "-e") == 0) {
@@ -64,45 +77,49 @@ int main(int argc, char *argv[]) {
         } else if (strcmp(argv[i], "-ub") == 0) {
             debut_url = argv[++i];
 
-            // vérifier que le début d'url donné est valide
+            // Vérification de la validité du nouvel URL
             if (debut_url.substr(0, 4) != "http") {
                 cerr << "Erreur : Veuillez entrer un début d'url à retirer valide" << endl;
                 return 1;
             }
+
         } else {
             cerr << "Erreur : Option inconnue donnée ( " << argv[i] << " )" << endl;
             return 1;
         }
     }
     
-    // lit les lignes du fichier log une par une tant qu'il n'y a pas d'erreur ou de eof
+    // Construction d'un objet lecture qui lit les lignes du fichier log une par une, tant qu'il n'y a pas d'erreur ou de EOF
     Lecture lecture(log_name);
 
-    int resLecture;  // Obtenir les erreurs de lecture
+    int resLecture;  // Retour de la fonction Readfile, correspondant aux codes erreurs de la lecture d'une ligne
     vector<string> line;
+
     while ((resLecture = lecture.Readfile(line)) >= 0) {
         if (resLecture == 1) {
-            out_line = true;  // variable ignorer ou nom la ligne
+            out_line = true;  // Variable permettant d'ignorer ou non la ligne, selon les options sélectionnées
 
-            // enlève le début de l'url correspondant au site que l'on parcours sur les urls qui l'ont
+            // Troncature du début de l'URL correspondant au site parcouru
             size_t debut_url_start = line[9].find(debut_url);
             if (debut_url_start != string::npos) {
                 line[9].erase(debut_url_start, debut_url.size());
             }
 
-            // filtre les lignes ayant pour cible un fichier image, css ou javascript
+            // Filtrage des lignes ayant pour cible un fichier image, CSS ou Javascript
             if (e) {
                 string url = line[5];
-                string extension4 = url.substr(url.size() - 4);
-                string extension3 = url.substr(url.size() - 3);
-                if (extension4 == ".jpg" || extension4 == ".ico" || extension4 == ".png" || 
-                    extension4 == ".gif" || extension4 == ".css" || extension3 == ".js") {  // trouver d'autre si nécessaire
-                    
-                    out_line = false;
+                if (url.size() >= 4) {
+                    string extension4 = url.substr(url.size() - 4);
+                    string extension3 = url.substr(url.size() - 3);
+                    if (extension4 == ".jpg" || extension4 == ".ico" || extension4 == ".png" || 
+                        extension4 == ".gif" || extension4 == ".css" || extension3 == ".js") {
+                        
+                        out_line = false;
+                    }
                 }
             }
 
-            // filtre les lignes ayant une heure différente de celle donnée
+            // Filtrage des lignes ayant une heure différente de celle considérée
             if (t) {
                 string timestamp = line[3];
                 size_t pos = timestamp.find(':');
@@ -113,27 +130,29 @@ int main(int argc, char *argv[]) {
             } 
 
             if (out_line) {
-                // récupère les données pour créer le graph et donner le top 10
-                // referer et cible de la requête
+                // Récupération des données de création du graphe et du Top10
+
+                // Récupération du referer et de la cible de la requête
                 string cible = line[5];
                 string referer = line[9];
 
-                // élément du graph
-                data_log[cible].first[referer]++;  // incrémente le nombre de requête avec le même referer et cible
-                                                // acceder avec [start] créé la pair si elle n'existe pas et initilise l'int à 0
-                data_log[cible].second++;  //incrémente le nombre de requête avec le même referer
+                // Élément du graphe
+                data_log[cible].first[referer]++;  // Incrémentation du nombre de requête ayant les mêmes referer et cible
+                                                   // Accéder avec [start] crée la paire si elle n'existe pas et initilise l'int à 0
+                data_log[cible].second++;  // Incrémentation du nombre de requêtes avec le même referer
             }
         }
+
         line.clear();
     }
 
     if (g) {
-        Graphe graph(data_log);
-        graph.toDot(graph_file_name);
+        Graphe graph(data_log); // Création d'un objet de la classe Graphe à partir du graphe data_log
+        graph.toDot(graph_file_name); // Création et remplissage du fichier .dot 
     }
 
-    // Affichage du top 10
-    multimap<int, string> top10;  // Trie automatiquement par ordre croissant des clés par nombre de requêtes
+    // Affichage du Top10
+    multimap<int, string> top10;  // Tri automatique par ordre croissant des clés par nombre de hits
 
     for (auto it = data_log.begin(); it != data_log.end(); ++it) {
         int nb_requetes = it->second.second; // Nombre total de requêtes vers la cible
@@ -146,7 +165,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // Affichage du top 10 en ordre décroissant
+    // Affichage du Top10 par ordre décroissant
     for (auto it = top10.rbegin(); it != top10.rend(); ++it) {
         cout << it->second << " (" << it->first << " hits)" << endl;
     }

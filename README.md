@@ -21,6 +21,11 @@ todo :
 - deep copy du graphe?
 - faire en sorte que lorsque le fichier n'existe pas, l'errorcode du main est 1
 
+TODO de lilas:
+- Tester si datalog est vide : s'il l'est, message approprié ("aucune ligne extraite"), sinon, traitements ! (tests 1, 7 et 11)
+- Modifier main pour que -t 7 soit transformé en -t 07, ou noter que ça marche exclusivement avec 2 digits
+- En profiter pour traiter les lettres qui font fail les stoi ?
+- Demander à Rime/Rida de faire le manuel d'utilisation (+ de vérifier la cohérence avec le guide de style ?)
 
 à tester (faire des mini-fichier de log) :
 tester la lecture du fichier log :
@@ -41,17 +46,19 @@ tester -e
 - avec toutes les lignes à supprimer
 
 tester -g
-- fichier .dot correct produit
+- 12 : fichier .dot correct produit 
+- 13 : g avec un nom de graphe ne terminant pas par .dot 
+- 14 : g sans nom de graphe 
 
 tester -ub
-- donner un url de début différent de celui par défaut
-- donner une url de début mal formée
+- 15 : donner un url de début différent de celui par défaut 
+- 16 : donner une url de début mal formée
 
 tester le top 10
-- fichier log avec - de 10 lignes
-- ficher log avec + de 10 lignes
-- fichier log avec le même nombre de consultations
+- 17 : fichier log avec - de 10 cibles différentes
+- 18 : ficher log avec + de 10 cibles différentes
+- 19 : fichier log avec le même nombre de consultations
 
 tester la robustesse
-- donner une option inexistante
-- donner toutes les options
+- 20 : donner une option inexistante
+- 21 : donner toutes les options

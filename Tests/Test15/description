@@ -1,0 +1,2 @@
+Ce test permet de tester le bon fonctionnement de l'option -ub url, permettant de changer l'url de base à tronquer.
+On n'affiche le referer que dans le fichier .dot, nous couplerons donc l'option ub avec l'option -g

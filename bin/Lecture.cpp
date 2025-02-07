@@ -102,6 +102,9 @@ int Lecture::Readfile(vector<string> &mots)
         return 0;
     }
     // Vérifier que la taille de réponse est numérique
+    if (tailleRepStr == "-") {
+        tailleRepStr = '0';
+    }
     try {
         size_t pos;
         stoi(tailleRepStr, &pos);
@@ -147,15 +150,15 @@ Lecture & Lecture::operator = (const Lecture &unLecture)
 //
 {
     if (this != &unLecture) {  // Vérifier l'auto-affectation
-        // Fermer le file actuel s'il est ouvert
+        // Fermer le fichier actuel s'il est ouvert
         if (file.is_open()) {
             file.close();
         }
 
-        // Copier le nom du file
+        // Copier le nom du fichier
         fileName = unLecture.fileName;
 
-        // Réouvrir le file avec le nouveau nom
+        // Réouvrir le fichier avec le nouveau nom
         file.open(fileName);
         if (!file) {
             cerr << "Erreur d'ouverture du file dans l'opérateur =" << endl;
@@ -167,7 +170,7 @@ Lecture & Lecture::operator = (const Lecture &unLecture)
 
 //-------------------------------------------- Constructeurs - destructeur
 Lecture::Lecture(const string &fileName) :fileName(fileName)
-// Algorithme : Initialisation d'un objet Lecture avec un nom de file et ouverture du file.
+// Algorithme : Initialisation d'un objet Lecture avec un nom de fichier et ouverture du fichier.
 //
 {
 #if MAP
@@ -198,7 +201,7 @@ Lecture::Lecture(const Lecture &unLecture) :fileName(unLecture.fileName)
 
 
 Lecture::~Lecture()
-// Algorithme : Ferme le file lors de la destruction de l'objet.
+// Algorithme : Ferme le fichier lors de la destruction de l'objet.
 //
 {
 #if MAP

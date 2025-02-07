@@ -1,0 +1,11 @@
+digraph {
+node0 [label="/EdT/5IF"];
+node1 [label="/EdT/4IF"];
+node1 -> node0 [label="2"];
+node0 -> node1 [label="2"];
+node2 [label="/EdT/3IF"];
+node2 -> node1 [label="1"];
+node3 [label="/SiteWebIF/Intranet-etudiant.php"];
+node4 [label="http://if.insa-lyon.fr/"];
+node4 -> node3 [label="1"];
+}

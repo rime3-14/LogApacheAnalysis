@@ -22,4 +22,4 @@ clean:
 # Nettoyage des fichiers objets et de l'exécutable
 cleanall:
 	echo Nettoyage	
-	rm -f TARGET *.o
+	rm -f $(TARGET) *.o
