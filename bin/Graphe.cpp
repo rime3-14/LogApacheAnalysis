@@ -26,42 +26,49 @@ void Graphe::toDot ( const string nom ) const
 // Algorithme :
 //
 {
-    ofstream fichier ( nom );
+    // Instanciation et ouverture du ficher de sortie .dot
+    ofstream fichier;
+    fichier.open( nom );
 
+    // Création d'une table des correspondances entre numéro de nœud et URL
+    unordered_map<string, int> correspondances;
+
+    // Remplissage du fichier
     fichier << "digraph {" << endl;
 
-    unordered_map<string, int> correspondances;
-    int next_index = 0;
-    int indexA, indexB;
-    unordered_map<string, int>::iterator it_A;
-    unordered_map<string, int>::iterator it_B;
+    int nextIndex = 0; // Numéro du prochain nœud à ajouter au .dot
+    int indexHit; // Numéros de nœud du hit et du referer
+    int indexRef;
+    unordered_map<string, int>::iterator itCorrHit; // Itérateurs dans la map des correspondances
+    unordered_map<string, int>::iterator itCorrRef;
 
-     // Parcours du graphe pour ajouter ses arrêtes
-    for (graphe::const_iterator it1 = graph.cbegin ( ) ; it1 != graph.cend ( ) ; ++it1 ) {
-        for (unordered_map<string, int>::const_iterator it2 = it1->second.first.cbegin ( ) ; it2 != it1->second.first.cend ( ) ; ++it2 ) {
-            // if A not in correspondances add A and node number, else find node number
-
-            it_A = correspondances.find ( (*it1).first );
-            it_B = correspondances.find ( (*it2).first );
- 
-            if (it_A == correspondances.end ( )) {
-                correspondances.insert( pair<string, int>( (*it1).first, next_index ));
-                indexA = next_index++;
-                fichier << "node" << indexA << " [label=\"" << (*it1).first << "\"];" << endl;
+     // Parcours du graphe pour ajouter ses nœuds et arrêtes au fichier
+    for (graphe::const_iterator itGrHit = graph.cbegin ( ) ; itGrHit != graph.cend ( ) ; ++itGrHit ) {
+        for (unordered_map<string, int>::const_iterator itGrRef = itGrHit->second.first.cbegin ( ) ; itGrRef != itGrHit->second.first.cend ( ) ; ++itGrRef ) {
+            
+            // Recherche des numéros de nœuds correspondants au hit et au referer
+            itCorrHit = correspondances.find ( (*itGrHit).first );
+            itCorrRef = correspondances.find ( (*itGrRef).first );
+            
+            // Si une recherche échoue, on ajoute le nœud correspondant à la map des correspondances et au .dot
+            if (itCorrHit == correspondances.end ( )) {
+                correspondances.insert( pair<string, int>( (*itGrHit).first, nextIndex ));
+                indexHit = nextIndex++;
+                fichier << "node" << indexHit << " [label=\"" << (*itGrHit).first << "\"];" << endl;
             } else {
-                indexA = (*it_A).second;
+                indexHit = (*itCorrHit).second; // Sinon, on récupère le numéro de nœud dans les correspondances
             }
 
-            if (it_B == correspondances.end ( )) {
-                correspondances.insert( pair<string, int>( (*it2).first, next_index ));
-                indexB = next_index++;
-                fichier << "node" << indexB << " [label=\"" << (*it2).first << "\"];" << endl;
+            if (itCorrRef == correspondances.end ( )) {
+                correspondances.insert( pair<string, int>( (*itGrRef).first, nextIndex ));
+                indexRef = nextIndex++;
+                fichier << "node" << indexRef << " [label=\"" << (*itGrRef).first << "\"];" << endl;
             } else {
-                indexB = (*it_B).second;
+                indexRef = (*itCorrRef).second;
             }
 
-            // add A -> B
-            fichier << "node" << indexB << " -> node" << indexA << " [label=\"" << (*it2).second << "\"];" << endl;
+            // Ajout de l'arrête au .dot
+            fichier << "node" << indexRef << " -> node" << indexHit << " [label=\"" << (*itGrRef).second << "\"];" << endl;
         }
     }
 
@@ -80,7 +87,7 @@ Graphe & Graphe::operator = ( const Graphe & unGraphe )
 // Algorithme :
 //
 {
-    graph = unGraphe.graph; // Copie ou même objet ?
+    graph = unGraphe.graph; // Deep copy du graph de unGraphe
     return *this;
 } //----- Fin de operator =
 
@@ -93,13 +100,13 @@ Graphe::Graphe ( const Graphe & unGraphe )
 #if MAP
     cout << "Appel au constructeur de copie de <Graphe>" << endl;
 #endif
-    graph = unGraphe.graph; // Copie ou même objet ?
+    graph = unGraphe.graph; // Deep copy du graph de unGraphe
 } //----- Fin de Graphe (constructeur de copie)
 
 
 Graphe::Graphe ( const graphe & unGraphe )
-// Algorithme :
-//
+// Algorithme : Construit un objet de classe à partir d'un
+// objet de type graphe
 {
 #if MAP
     cout << "Appel au constructeur de <Graphe>" << endl;
@@ -109,8 +116,8 @@ Graphe::Graphe ( const graphe & unGraphe )
 
 
 Graphe::~Graphe ( )
-// Algorithme :
-//
+// Algorithme : Les libérations mémoire des objets Graphe 
+// sont toutes réalisées automatiquement.
 {
 #if MAP
     cout << "Appel au destructeur de <Graphe>" << endl;

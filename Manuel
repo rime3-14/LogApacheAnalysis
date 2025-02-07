@@ -1,0 +1,37 @@
+.TH analog 0 "07/02/2025" 1 " "
+
+.SH NAME
+    analog \- analyse de fichiers de log apache
+
+.SH SYNTAXE
+    analog [OPTIONS] ... FILE
+
+.SH DESCRIPTION
+    Établit des statistiques sur les requêtes contenues dans un fichier log apache, notamment un Top 10 et la création d'un graphe des requêtes.
+
+.SH OPTIONS
+    Par défaut, donne les 10 documents les plus consultés.
+
+    -g FICHIER_GRAPHE
+        Produit un fichier .dot correspondant au graphe des requêtes du fichier de log.
+        Il est obligatoire de donner un nom de fichier, qui devra se terminer par .dot.
+        Pour afficher le graphe, utiliser la commande suivante :
+        dot -Tpng -o graphe.png FICHIER_GRAPHE
+
+    -e
+        Exclut les documents avec les extensions .jpg, .ico, .png, .gif, .css et .js.
+
+    -t HEURE
+        Prend en compte uniquement les hits dans le créneau horaire [HEURE, HEURE+1[.
+        L'argument HEURE doit être un entier compris dans l'intervalle [0:23].
+
+    -ub DEBUT_URL
+        Permet de changer la base d'URL à tronquer dans le champ referer.
+        Par défaut, l'URL est http://intranet-if.insa-lyon.fr.
+        La nouvelle URL doit commencer par http pour être considérée valide.
+
+.SH VALEURS DE RETOUR
+    0    Si l'exécution s'est déroulée sans problème.
+    1    S'il y a eu une erreur à l'exécution.
+.SH AUTEURS
+    Écrit par Enzo Dos Anjos, Lilas Dureuil, Rida Bindech et Rime Chihab-Eddine

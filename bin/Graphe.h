@@ -11,10 +11,7 @@ Graphe  -  génère un fichier .dot compatible avec GraphViz
 
 //-------------------------------------------------------- Include système
 using namespace std;
-#include <string>
-#include <vector>
 #include <unordered_map>
-#include <utility>
 
 //--------------------------------------------------- Interfaces utilisées
 
@@ -75,7 +72,6 @@ public:
 protected:
 //----------------------------------------------------- Attributs protégés
     graphe graph;
-    vector<string> correspondances;
 
 };
 

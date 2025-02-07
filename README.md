@@ -5,6 +5,11 @@ Ce projet est un outil d'analyse des fichiers de logs Apache. Il permet d'extrai
 
 ## Fonctionnalités
 - Lecture de fichier de logs Apache
-- affichage du top 10 des documents les plus consultés dans la console
+- Affichage du top 10 des documents les plus consultés dans la console
 - Filtrage des logs selon différents critères (date et type de fichier)
 - Génération d'un fichier dot pour avoir un graph avec GraphViz montrant les déplacements entre les documents du site
+
+## Manuel d'utilisation
+Pour utiliser la commande man analog, il faut réaliser au préalable les opérations suivantes :
+- sudo cp Manuel /usr/local/share/man/man1/analog.1
+- sudo mandb
