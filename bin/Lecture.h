@@ -1,26 +1,26 @@
 /*************************************************************************
-                           Lecture  -  Classe pour lire un fichier
+                   Lecture  -  Classe pour lire un fichier
                              -------------------
-    Début                : 31-05-2025
+    Début                : 31/01/2025
     Copyright            : (C) 2025 by Rida Bindech
+                           (C) 2025 by Enzo Dos Anjos
     E-mail               : rida.bindech@insa-lyon.fr
+                           enzo.dosanjos@insa-lyon.fr
 *************************************************************************/
 
-//---------- Interface de la classe <Lecture> (fichier Lecture.h) ----------------
+//------ Interface de la classe <Lecture> (fichier Lecture.h) ------------
 #if ! defined ( LECTURE_H )
 #define LECTURE_H
 
-//--------------------------------------------------- Interfaces utilisées
-#include <string>
-#include <vector>
-#include <fstream>
-
 //------------------------------------------------------------------------
 // Rôle de la classe <Lecture>
-// Cette classe permet d'ouvrir et de lire un fichier ligne par ligne ou mot par mot.
-// Elle stocke les données lues dans un vecteur de chaînes.
-//
+// Cette classe permet d'ouvrir un fichier de log et d'en extraire ligne
+// par ligne les champs dans un vecteur de string.
 //------------------------------------------------------------------------
+
+//-------------------------------------------------------- Include système
+using namespace std;
+#include <fstream>
 
 class Lecture
 {
@@ -28,44 +28,30 @@ class Lecture
 public:
 //----------------------------------------------------- Méthodes publiques
     int Readfile(vector<string> &line);
-    // Mode d'emploi :
-    //  - Lire le fichier et stocker son contenu dans un vecteur de chaînes.
-    // Contrat :
-    //  - Le fichier doit être accessible en lecture.
-
+    // Mode d'emploi : Permet de lire une ligne du fichier de log et d'en 
+    // stocker le contenu dans un vecteur de string.
 
 //------------------------------------------------- Surcharge d'opérateurs
     Lecture & operator=(const Lecture &unLecture);
-    // Mode d'emploi :
-    //  - Permet d'affecter une instance de Lecture à une autre.
-    // Contrat :
-    //  - L'auto-affectation est gérée.
-
+    // Mode d'emploi : Permet d'affecter une instance de Lecture à une autre.
 
 //-------------------------------------------- Constructeurs - destructeur
     Lecture(const string &fileName);
-    // Mode d'emploi :
-    //  - Construit un objet Lecture et ouvre un fichier donné en paramètre.
-    // Contrat :
-    //  - Le fichier doit exister et être lisible.
+    // Mode d'emploi : Construit un objet Lecture et ouvre un fichier donné 
+    // en paramètre.
 
     Lecture(const Lecture &unLecture);
-    // Mode d'emploi :
-    //  - Copie un objet Lecture existant.
-    // Contrat :
-    //  - L'objet copié doit être valide.
+    // Mode d'emploi : Copie un objet Lecture existant.
 
     virtual ~Lecture();
-    // Mode d'emploi :
-    //  - Ferme le fichier si ouvert et libère les ressources.
+    // Mode d'emploi : Ferme le fichier si ouvert pour détruire l'objet Lecture.
 
 //------------------------------------------------------------------ PRIVE
 private:
 //----------------------------------------------------- Attributs protégés
-    std::fstream file; 
-    std::string fileName;
-};
+    fstream file; 
+    string fileName;
 
-//-------------------------------- Autres définitions dépendantes de <Lecture>
+};
 
 #endif // LECTURE_H

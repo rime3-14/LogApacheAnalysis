@@ -9,7 +9,6 @@ MAP ?= 0  # Pour activer ou désactiver la MAP, cleanall puis make avec l'option
 # Compilation de l'exécutable
 $(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJECTS)
-	make clean
 
 # Compilation de chaque fichier source en objet
 %.o: %.cpp %.h
@@ -21,5 +20,5 @@ clean:
 
 # Nettoyage des fichiers objets et de l'exécutable
 cleanall:
-	echo Nettoyage	
+	echo Nettoyage
 	rm -f $(TARGET) *.o

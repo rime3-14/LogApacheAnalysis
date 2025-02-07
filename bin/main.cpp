@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     bool outLine;  // boolean déterminant si la ligne doit être ignoré ou non
 
     // Objet de type utilisateur graphe, pour créer le graphe et le top 10
-    graphe dataLog;
+    Statistiques dataLog;
 
 
     // Vérification des options
