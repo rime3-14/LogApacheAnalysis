@@ -4,7 +4,7 @@ A C++ coursework CLI that reads Apache access logs, reports the ten most request
 
 ## Build and try it
 
-Use G++ and Make on Linux or WSL. From the repository root:
+Use G++ and Make on Linux or WSL. Run these commands from the repository root.
 
 ```bash
 make -C bin
