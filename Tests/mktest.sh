@@ -6,7 +6,7 @@ nMis=0
 
 for i in Test*
 do
-  ./test.sh $i results.csv
+  bash test.sh "$i" results.csv
   result=$?
   if [ $result -eq 0 ]
   then
@@ -25,3 +25,4 @@ echo "Failed tests     : $nKo"
 echo "Misformed tests  : $nMis"
 echo "-----------------------"
 echo "Total            : $nTotal"
+test "$nKo" -eq 0 && test "$nMis" -eq 0

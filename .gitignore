@@ -1,0 +1,5 @@
+*.o
+/analog
+/bin/analog
+/navigation.dot
+/navigation.svg

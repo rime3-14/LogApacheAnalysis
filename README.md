@@ -1,20 +1,17 @@
-# Analyse de Logs Apache
+# Apache Log Analysis
 
-## Description
-Ce projet est un outil d'analyse des fichiers de logs Apache. Il permet d'extraire des statistiques utiles comme les 10 pages les plus visitées, et bien plus encore.
+A C++ coursework CLI that reads Apache access logs, reports the ten most requested resources, and exports a Graphviz graph of transitions from referrers to requested pages.
 
-## Fonctionnalités
-- Lecture de fichier de logs Apache
-- Affichage du top 10 des documents les plus consultés dans la console
-- Filtrage des logs selon différents critères (date et type de fichier)
-- Génération d'un fichier dot pour avoir un graph avec GraphViz montrant les déplacements entre les documents du site
+## Build and try it
 
-## Manuel d'utilisation
-Pour utiliser la commande man analog et accéder au manuel d'utilisation dans la console, il faut réaliser au préalable les opérations suivantes dans le dossier LogApacheAnalysis :
-- sudo cp Manuel /usr/local/share/man/man1/analog.1
-- sudo mandb
+Use G++ and Make on Linux or WSL. From the repository root:
 
-## MAP
-Pour activer la MAP, entrez les commandes suivantes dans le dossier bin :
-- make cleanall
-- make MAP=1
+```bash
+make -C bin
+./bin/analog mini_log.log
+./bin/analog -e -g navigation.dot mini_log.log
+```
+
+`-e` excludes static assets, `-t 14` filters by hour and `-g navigation.dot` exports a graph. To render the graph, install Graphviz and run `dot -Tsvg navigation.dot -o navigation.svg`. See the existing manual with `man -l Manuel`.
+
+`bin/Lecture.cpp` reads and filters the log. `bin/Graphe.cpp` aggregates request counts and writes the graph. After building, run the command-line fixtures with `(cd Tests && bash mktest.sh)`.
